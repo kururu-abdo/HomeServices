@@ -5,4 +5,4 @@ without using any SERVER
 
 
 
-![](https://github.com/HomeServices/app%20%preview.gif)
+![](https://github.com/HomeServices/app preview.gif)
