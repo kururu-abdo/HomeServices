@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,8 +54,16 @@ fun  ShowService(serviceModel: ServiceModel ,
 val  scaffoldState = rememberScaffoldState()
     val detailsViewModel = application.appContainer.detailsViewModel.create()
     var viewState = detailsViewModel.viewState.collectAsState()
-    var visible by remember { mutableStateOf(true) }
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (!visible) {
+            visible = true
+        }
 
+
+
+
+    }
 
 
     Scaffold(scaffoldState = scaffoldState,
@@ -179,16 +188,17 @@ horizontalArrangement = Arrangement.SpaceEvenly ,
                                         enter = slideInVertically(
                                             // Start the slide from 40 (pixels) above where the content is supposed to go, to
                                             // produce a parallax effect
-                                            initialOffsetY = { -40 }
+                                            initialOffsetY = { -40 },
+                                            animationSpec = TweenSpec<IntOffset>(
+                                                durationMillis = index  *1000
+                                            )
                                         ) + expandVertically(
                                             expandFrom = Alignment.Top
                                         ) + scaleIn(
                                             // Animate scale from 0f to 1f using the top center as the pivot point.
                                             transformOrigin = TransformOrigin(0.5f, 0f)
                                         ) + fadeIn(initialAlpha = 0.3f ,
-                                            animationSpec = TweenSpec<Float>(
-                                                durationMillis = index  *100
-                                            )
+
 
                                             ),
                                         exit = slideOutVertically() + shrinkVertically() + fadeOut() + scaleOut(targetScale = 1.2f)
@@ -441,6 +451,8 @@ LazyRow(
             modifier = Modifier
                 .fillMaxWidth(fraction = .5f)
                 .height(90.dp)
+
+
                 .clickable {
 
                     val moshi = Moshi
@@ -457,6 +469,9 @@ LazyRow(
 
         ) {
             Column(
+                modifier= Modifier.padding(
+horizontal = 5.dp
+                ) ,
                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(painter = painterResource(id = item.serviceIcon), contentDescription = "")
