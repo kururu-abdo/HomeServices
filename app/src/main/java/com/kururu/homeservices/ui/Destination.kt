@@ -8,6 +8,8 @@ sealed class Destination(val routeName:String)  { // parcelable so that it can b
      object Home : Destination( routeName = "/")
     object ServiceDetails : Destination("details")
     object ServiceRequest : Destination("done")
+    object ProfilePageRoue : Destination("profile")
+
 
     object SplashSCreen : Destination("splash")
 }

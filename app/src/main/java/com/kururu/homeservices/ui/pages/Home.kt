@@ -228,7 +228,7 @@ AnimatedContent(mainViewModel.viewState) { targetState->
             CircularProgressIndicator()
         }
         else -> {
-            RecentWorker(serviceMan = targetState.value.worker!!)
+            RecentWorker(serviceMan = targetState.value.worker!! ,navController)
         }
     }
 }
@@ -414,7 +414,7 @@ if (!visible){
 
                  }
 
-WorkersRated(serviceMen = mainViewModel.viewState.value.worders)
+WorkersRated(serviceMen = mainViewModel.viewState.value.worders , navController )
 
 
 
@@ -427,7 +427,7 @@ WorkersRated(serviceMen = mainViewModel.viewState.value.worders)
 
 
 @Composable
-fun  RecentWorker(serviceMan: ServiceMan) {
+fun  RecentWorker(serviceMan: ServiceMan , navController: NavController) {
 Box(  modifier = Modifier
 
     .fillMaxWidth()
@@ -475,7 +475,16 @@ Box(  modifier = Modifier
                     RoundedCornerShape(10.dp)
                 )
                 .background(Color.Green)
+                .clickable {
+                    val moshi = Moshi.Builder()
+                        .add(KotlinJsonAdapterFactory())
+                        .build()
+                    val jsonAdapter = moshi.adapter<ServiceMan>(ServiceMan::class.java).lenient()
+                    val serviceToJson  =jsonAdapter.toJson(serviceMan)
+                    navController.navigate(Destination.ProfilePageRoue.routeName+"/${serviceToJson}")
 
+
+                }
             ,
             contentAlignment = Alignment.Center
         ) {
@@ -491,7 +500,7 @@ Box(  modifier = Modifier
 }
 
 @Composable
-fun  WorkersRated(serviceMen: List<ServiceMan>) {
+fun  WorkersRated(serviceMen: List<ServiceMan> , navController: NavController) {
 Box(   
     
     modifier = Modifier
@@ -505,7 +514,7 @@ Box(
     ){
         itemsIndexed( serviceMen){index, item ->
 
-                WorkerRated(serviceMan = item)
+                WorkerRated(serviceMan = item , navController = navController)
 
 
         }
@@ -514,12 +523,21 @@ Box(
 }
 
 @Composable
-fun  WorkerRated(serviceMan: ServiceMan){
+fun  WorkerRated(serviceMan: ServiceMan , navController: NavController){
 //    Card(modifier = Modifier .fillMaxHeight() .padding(10.dp) , elevation = 2.dp) {
 
         Row(
             modifier = Modifier.fillMaxWidth(0.7f)
                 .fillMaxHeight()
+                .clickable {
+                    val moshi = Moshi.Builder()
+                        .add(KotlinJsonAdapterFactory())
+                        .build()
+                    val jsonAdapter = moshi.adapter<ServiceMan>(ServiceMan::class.java).lenient()
+                    val serviceToJson  =jsonAdapter.toJson(serviceMan)
+                    navController.navigate(Destination.ProfilePageRoue.routeName+"/${serviceToJson}")
+
+                }
             ,
 
             horizontalArrangement = Arrangement.SpaceEvenly,

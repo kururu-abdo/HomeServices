@@ -1,5 +1,6 @@
 package com.kururu.homeservices
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,14 +22,12 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.kururu.homeservices.components.ServiceSchedule
+import com.kururu.homeservices.data.model.ServiceMan
 import com.kururu.homeservices.data.model.ServiceModel
 import com.kururu.homeservices.di.AppContainer
 import com.kururu.homeservices.logic.MainViewModel
 import com.kururu.homeservices.ui.Destination
-import com.kururu.homeservices.ui.pages.Home
-import com.kururu.homeservices.ui.pages.OrderService
-import com.kururu.homeservices.ui.pages.ShowService
-import com.kururu.homeservices.ui.pages.SplashScreen
+import com.kururu.homeservices.ui.pages.*
 import com.kururu.homeservices.ui.theme.HomeServicesTheme
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -72,6 +71,7 @@ fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
 
+@SuppressLint("NewApi")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen( controller: NavHostController , application: MyApplication) {
@@ -110,13 +110,38 @@ fun MainScreen( controller: NavHostController , application: MyApplication) {
 
             ShowService(serviceObject!! , application , navController =controller)
         }
+
+        composable(
+
+
+            route = Destination.ProfilePageRoue.routeName+"/{user}" ,
+
+//            arguments = listOf(
+//                navArgument("service"){type=NavType.ParcelableType(ServiceModel::class.java)}
+//            )
+
+
+        ){
+
+            val serviceJsonString =  it.arguments?.getString("user")
+
+            val moshi = Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
+            val jsonAdapter = moshi.adapter(ServiceMan::class.java).lenient()
+            val serviceObject = serviceJsonString?.let { it1 -> jsonAdapter.fromJson(it1) }
+
+            ProfilePage(serviceObject!!  , navController =controller)
+        }
         composable(
             route = Destination.ServiceRequest.routeName
  ,
 //            deepLinks = listOf(navDeepLink { uriPattern = "$uri/{id}" })
 
         ){
-          OrderService(navController = controller)
+//          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+              OrderService(navController = controller)
+//          }
         }
     }
 
